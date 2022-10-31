@@ -153,25 +153,22 @@ async function generateBoard() {
   mySpell = spells[randint(spells.length)].name;
 
   // Create random spell text field.
-  question.textContent = `What is the icon of \r\n'${mySpell}'?`;
+  question.textContent = `What is the icon of\r\n'${mySpell}'?`;
 
   // Create image grid with random spells.
   grid.textContent = "";
-  for (let i = 0; i < myBoardSize; i++) {
-    let row = document.createElement("div");
-    for (let j = 0; j < myBoardSize; j++) {
-      let img = document.createElement("img");
-      img.src = spells[i * myBoardSize + j].src;
-      img.onmouseover = function () {
-        playSound("sound/hover.mp3");
-      };
-      img.onclick = function () {
-        playSound("sound/click.mp3");
-        guess(img, spells[i * myBoardSize + j].name);
-      };
-      row.appendChild(img);
-    }
-    grid.appendChild(row);
+  grid.style.maxWidth = 128 * myBoardSize + "px";
+  for (let i = 0; i < myBoardSize ** 2; i++) {
+    let img = document.createElement("img");
+    img.src = spells[i].src;
+    img.onmouseover = function () {
+      playSound("sound/hover.mp3");
+    };
+    img.onclick = function () {
+      playSound("sound/click.mp3");
+      guess(img, spells[i].name);
+    };
+    grid.appendChild(img);
   }
 
   // Create score counter.

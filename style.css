@@ -21,6 +21,7 @@ body {
 
 button {
   color: #cdbe91;
+  font-size: 1.5rem;
   font-weight: bold;
   background: linear-gradient(#0b1832, #0b1832) padding-box,
     linear-gradient(to top right, #af8939, #e7d371) border-box;
@@ -36,17 +37,16 @@ button:hover {
 }
 
 button img {
-  width: 1rem;
-  height: 1rem;
+  width: 2rem;
+  height: 2rem;
   vertical-align: middle;
 }
 
 #app {
   color: #f7f9fb;
+  max-width: 30%;
   font-size: 1.5rem;
   text-align: center;
-  width: fit-content;
-  height: fit-content;
   margin: 2rem auto auto auto;
   background: linear-gradient(#1e2328, #1e2328) padding-box,
     linear-gradient(to top right, #af8939, #e7d371) border-box;
@@ -72,13 +72,17 @@ button img {
   padding: 1rem;
 }
 
+#question {
+  white-space: pre;
+}
+
 #question-clue {
   color: #969696;
 }
 
 #grid {
-  width: fit-content;
-  height: fit-content;
+  display: flex;
+  flex-wrap: wrap;
   border: 0.3rem solid #03b9b5;
   border-radius: 1rem;
   margin: 1rem auto 1rem auto;
@@ -105,15 +109,14 @@ button img {
 }
 
 img {
-  width: 5rem;
+  box-sizing: border-box;
+  width: 128px;
   border: 0.3rem solid transparent;
   border-radius: 1rem;
-  margin: 0.1rem;
 }
 
 img:hover {
-  border-width: 0.4rem;
-  margin: 0rem;
+  border-width: 0.5rem;
 }
 
 img:not(.correct, .incorrect):hover {
@@ -135,31 +138,28 @@ img:not(.correct, .incorrect):hover {
   }
 
   #app {
-    font-size: 2rem;
     min-width: 100vw;
     min-height: 100vh;
     margin: 0;
     border-radius: 0;
-    border-style: solid;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
 
+  #question {
+    white-space: normal;
+  }
+
+  #grid {
+    display: flex;
+    justify-content: center;
+    border-style: dashed none dashed none;
+    border-color: #e7d371;
+    border-radius: 0;
+  }
+
   button {
-    font-size: 2rem;
     width: 100%;
-    height: 4rem;
-    border-style: solid;
-    padding: 0;
-  }
-
-  button img {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  img {
-    width: 8rem;
   }
 }
