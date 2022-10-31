@@ -15,7 +15,7 @@ var myBoard;
 var myScore;
 var mySpell;
 var myState = "inactive";
-var url = "http://ddragon.leagueoflegends.com/cdn/12.20.1/";
+var url = "https://ddragon.leagueoflegends.com/cdn/12.20.1/";
 
 /**
  * @name startGame
