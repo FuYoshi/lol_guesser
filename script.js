@@ -18,14 +18,22 @@ var myState = "inactive";
 var url = "https://ddragon.leagueoflegends.com/cdn/12.20.1/";
 
 /**
+ * @name initialize
+ * @description Set all default values for global variables.
+ */
+function initialize() {
+  setDifficulty();
+  setVolume();
+}
+
+/**
  * @name startGame
  * @description Reset all global variables and start the game.
  */
 function startGame() {
   toggleVisibility("restart", "none");
   toggleVisibility("game", "block");
-  setDifficulty();
-  setVolume();
+  initialize();
 
   myBoard = document.getElementById("grid");
   myScore = 0;
