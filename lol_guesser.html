@@ -1,0 +1,75 @@
+<!--
+Filename: lol_guesser.html
+Authors: Yoshi Fu
+Project: LoL Guesser Game
+Date: October 2022
+
+Summary:
+- [TODO]
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="navbar">
+        <button onclick="index(0)">
+          <img srcset="img/question.svg" />Help
+        </button>
+        <button onclick="index(1)"><img srcset="img/play.svg" />Play</button>
+        <button onclick="index(2)">
+          <img srcset="img/settings.svg" />Settings
+        </button>
+      </div>
+
+      <div id="help">
+        <h1>How To Play</h1>
+        <p>You will see a grid filled with icons of random champion spells.</p>
+        <p><br></p>
+        <p>The objective is to guess the icon given the name of the spell.</p>
+        <p><br></p>
+        <p>Each correct answer is worth one point. Good Luck!</p>
+      </div>
+
+      <div id="settings">
+        <label for="volume">Volume:</label>
+        <input
+          id="volume"
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          onchange="setVolume()"
+        />
+        <label for="difficulty">Difficulty:</label>
+        <input
+          id="difficulty"
+          type="range"
+          min="3"
+          max="5"
+          value="3"
+          onchange="setDifficulty()"
+        />
+      </div>
+
+      <div id="game">
+        <div id="question"></div>
+        <div id="question-clue">Select an icon to guess.</div>
+        <div id="grid"></div>
+        <div id="score"></div>
+
+        <button id="restart" onclick="startGame()">
+          <img srcset="img/restart.svg" />Restart
+        </button>
+      </div>
+
+      <div id="footer">Ⓒ Copyright 2022</div>
+    </div>
+  </body>
+
+  <script type="text/javascript" src="script.js"></script>
+</html>
