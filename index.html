@@ -20,21 +20,15 @@ Summary:
     <div id="app">
       <div id="navbar">
         <button
+          class="active"
           onclick="index(0); playSound('sound/click.mp3');"
-          onmouseover="playSound('sound/hover.mp3')"
         >
           <img srcset="img/question.svg" />Help
         </button>
-        <button
-          onclick="index(1); playSound('sound/click.mp3')"
-          onmouseover="playSound('sound/hover.mp3')"
-        >
+        <button onclick="index(1); playSound('sound/click.mp3')">
           <img srcset="img/play.svg" />Play
         </button>
-        <button
-          onclick="index(2); playSound('sound/click.mp3')"
-          onmouseover="playSound('sound/hover.mp3')"
-        >
+        <button onclick="index(2); playSound('sound/click.mp3')">
           <img srcset="img/settings.svg" />Settings
         </button>
       </div>
@@ -78,7 +72,6 @@ Summary:
         <button
           id="restart"
           onclick="startGame(); playSound('sound/click.mp3')"
-          onmouseover="playSound('sound/hover.mp3')"
         >
           <img srcset="img/restart.svg" />Restart
         </button>
