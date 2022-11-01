@@ -8,64 +8,34 @@
  * - [TODO]
  */
 
-var curIndex = 0;
-var myVolume;
-var myBoardSize;
-var myBoard;
-var myScore;
-var mySpell;
-var myState = "inactive";
 var url = "https://ddragon.leagueoflegends.com/cdn/12.20.1/";
+var myJSON;
+var myDifficulty;
+var myVolume;
+var curIndex = 0;
+
+var myState;
+var mySpell;
+var myScore;
+
+function startGame() {
+  toggleVisibility("restart", "none");
+  myState = "active";
+  myScore = 0;
+  generateLevel();
+}
 
 /**
  * @name initialize
- * @description Set all default values for global variables.
+ * @description Request the JSON data of all champions and user settings.
  */
-function initialize() {
+async function initialize() {
   setDifficulty();
   setVolume();
-}
 
-/**
- * @name startGame
- * @description Reset all global variables and start the game.
- */
-function startGame() {
-  toggleVisibility("restart", "none");
-  toggleVisibility("game", "block");
-  initialize();
-
-  myBoard = document.getElementById("grid");
-  myScore = 0;
-  myState = "active";
-  generateBoard();
-}
-
-/**
- * @name setVolume
- * @description Set the volume of sound effects.
- */
-function setVolume() {
-  myVolume = document.getElementById("volume").value / 100;
-}
-
-/**
- * @name setDifficulty
- * @description Set the difficulty of the game.
- */
-function setDifficulty() {
-  myBoardSize = document.getElementById("difficulty").value;
-}
-
-/**
- * @name playSound
- * @param {String} sound path to the audio file.
- * @description Play the specified sound.
- */
-function playSound(sound) {
-  let audio = new Audio(sound);
-  audio.volume = myVolume;
-  audio.play();
+  let response = await fetch(url + "data/en_US/championFull.json");
+  let data = await response.json();
+  myJSON = data.data;
 }
 
 /**
@@ -74,6 +44,8 @@ function playSound(sound) {
  * @description Change the current page and the active button on the navbar.
  */
 function index(newIndex) {
+  playSound("sound/click.mp3");
+
   // Change active button.
   let navbar = document.getElementById("navbar");
   let buttons = navbar.getElementsByTagName("button");
@@ -91,6 +63,17 @@ function index(newIndex) {
     startGame();
   }
   curIndex = newIndex;
+}
+
+/**
+ * @name playSound
+ * @param {String} sound path to the audio file.
+ * @description Play the specified sound.
+ */
+function playSound(sound) {
+  let audio = new Audio(sound);
+  audio.volume = myVolume;
+  audio.play();
 }
 
 /**
@@ -120,21 +103,23 @@ function toggleVisibility(id, visibility = null) {
  * @description Compare the guess with the answer, change score accordingly.
  */
 function guess(cell, spell) {
-  if (spell == mySpell) {
+  playSound("sound/click.mp3");
+
+  if (spell.name == mySpell.name) {
     cell.classList.add("correct");
 
     // Generate next level.
     if (myState == "active") {
-      generateBoard();
       myScore++;
+      generateLevel();
     }
   } else {
     cell.classList.add("incorrect");
 
     // Toggle show 'restart' button.
     if (myState == "active") {
-      toggleVisibility("restart", "block");
       myState = "inactive";
+      toggleVisibility("restart", "block");
     }
   }
 }
@@ -143,88 +128,87 @@ function guess(cell, spell) {
  * @name generateBoard
  * @description Create the grid containing all ability icons.
  */
-async function generateBoard() {
+function generateLevel() {
   let question = document.getElementById("question");
   let grid = document.getElementById("grid");
   let score = document.getElementById("score");
 
   // Generate random answer from chosen spells.
-  let spells = await generateSpells();
-  mySpell = spells[randint(spells.length)].name;
+  let spells = generateSpells();
 
   // Create random spell text field.
-  question.textContent = `What is the icon of\r\n'${mySpell}'?`;
+  question.textContent = `What is the icon of '${mySpell.name}'?`;
 
   // Create image grid with random spells.
   grid.textContent = "";
-  grid.style.maxWidth = 128 * myBoardSize + "px";
-  for (let i = 0; i < myBoardSize ** 2; i++) {
-    let img = document.createElement("img");
-    img.src = spells[i].src;
-    img.onmouseover = function () {
-      playSound("sound/hover.mp3");
-    };
-    img.onclick = function () {
-      playSound("sound/click.mp3");
-      guess(img, spells[i].name);
-    };
-    grid.appendChild(img);
-  }
+	grid.style.maxWidth = 128 * myDifficulty + "px";
+  spells.forEach((spell) => grid.append(spell2image(spell)));
 
   // Create score counter.
   score.textContent = `Score: ${myScore}`;
-
-  return grid;
 }
 
-/**
- * @name generateSpells
- * @return {Array} Array containing randomly generated spells.
- * @description Generate random spells (amount based on difficulty).
- */
-async function generateSpells() {
-  let data = await getData();
-  data = data.data;
+function spell2image(spell) {
+  let img = document.createElement("img");
+  img.src = spell.icon;
+  img.onmouseover = function () {
+    playSound("sound/hover.mp3");
+  };
+  img.onclick = function () {
+    guess(img, spell);
+  };
+  return img;
+}
 
-  // Generate list of all champions
-  let champions = Object.keys(data);
-  let choices = choice(champions, myBoardSize ** 2, false);
+function generateSpells() {
+  // Generate random champions and abilities.
+  let allChampions = Object.keys(myJSON);
+  let allAbilities = [0, 1, 2, 3, 4];
+  let randomChampions = choice(allChampions, myDifficulty ** 2, false);
+  let randomAbilities = choice(allAbilities, myDifficulty ** 2, true);
 
-  // Create grid with spell objects.
+  // Convert random champions and abilities to spells.
   let spells = [];
-  for (let i = 0; i < choices.length; i++) {
-    spells.push(new spell(data[choices[i]]));
+  for (let i = 0; i < randomChampions.length; i++) {
+    let randomSpell = new Spell(randomChampions[i], randomAbilities[i]);
+    spells.push(randomSpell);
   }
+
+  // Choose a random spell to be the answer of a level.
+  mySpell = spells[randint(spells.length)];
+
   return spells;
 }
 
 /**
- * @name spell
- * @param {Array} data JSON containing champion specific data.
- * @description Choose a random ability and create spell object.
- *              an spell [Q, W, E, R, P]
- *              maps to  [0, 1, 2, 3, 4]
+ * A League of Legends spell is an ability [Q, W, E, R, P] of a champion.
+ * The name and image of the icon will be stored in the class.
  */
-function spell(data) {
-  let spell = randint(0, 5);
-  if (spell == 4) {
-    prefix = url + "img/passive/";
-    this.name = data["passive"]["name"];
-    this.src = prefix + data["passive"]["image"]["full"];
-  } else {
-    prefix = url + "img/spell/";
-    this.name = data["spells"][spell]["name"];
-    this.src = prefix + data["spells"][spell]["image"]["full"];
+class Spell {
+  constructor(champion, ability) {
+    this.name = this._getName(champion, ability);
+    this.icon = this._getIcon(champion, ability);
   }
-}
 
-/**
- * @name getData
- * @description Return JSON containing data of all champions.
- */
-async function getData() {
-  let response = await fetch(url + "data/en_US/championFull.json");
-  return await response.json();
+  // Get the name of the champion ability.
+  _getName(champion, ability) {
+    if (ability == 4) {
+      return myJSON[champion]["passive"]["name"];
+    } else {
+      return myJSON[champion]["spells"][ability]["name"];
+    }
+  }
+
+  // Get the icon of the champion ability.
+  _getIcon(champion, ability) {
+    if (ability == 4) {
+      let prefix = url + "img/passive/";
+      return prefix + myJSON[champion]["passive"]["image"]["full"];
+    } else {
+      let prefix = url + "img/spell/";
+      return prefix + myJSON[champion]["spells"][ability]["image"]["full"];
+    }
+  }
 }
 
 /**
@@ -278,4 +262,20 @@ function randint(low, high = null, size = null) {
     choices.push(choice);
   }
   return choices;
+}
+
+/**
+ * @name setVolume
+ * @description Set the volume of sound effects.
+ */
+function setVolume() {
+  myVolume = document.getElementById("volume").value / 100;
+}
+
+/**
+ * @name setDifficulty
+ * @description Set the difficulty of the game.
+ */
+function setDifficulty() {
+  myDifficulty = document.getElementById("difficulty").value;
 }
