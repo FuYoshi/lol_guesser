@@ -17,11 +17,22 @@ var curIndex = 0;
 var myState;
 var mySpell;
 var myScore;
+var myMode;
+
+// Dictionary to translate ability key to index.
+var atoi = {
+  Q: 0,
+  W: 1,
+  E: 2,
+  R: 3,
+  P: 4,
+};
 
 function startGame() {
   toggleVisibility("restart", "none");
   myState = "active";
   myScore = 0;
+  setMode();
   generateLevel();
 }
 
@@ -125,8 +136,8 @@ function guess(cell, spell) {
 }
 
 /**
- * @name generateBoard
- * @description Create the grid containing all ability icons.
+ * @name generateLevel
+ * @description Generate a level containing random spells and a question.
  */
 function generateLevel() {
   let question = document.getElementById("question");
@@ -141,13 +152,18 @@ function generateLevel() {
 
   // Create image grid with random spells.
   grid.textContent = "";
-	grid.style.maxWidth = 96 * myDifficulty + "px";
+  grid.style.maxWidth = 96 * myDifficulty + "px";
   spells.forEach((spell) => grid.append(spell2image(spell)));
 
   // Create score counter.
   score.textContent = `Score: ${myScore}`;
 }
 
+/**
+ * @name spell2image
+ * @param {Spell} spell spell to convert to image.
+ * @description Convert a Spell objcect to an image.
+ */
 function spell2image(spell) {
   let img = document.createElement("img");
   img.src = spell.icon;
@@ -160,10 +176,14 @@ function spell2image(spell) {
   return img;
 }
 
+/**
+ * @name generateSpells
+ * @description Generate random spells of random champions by selected mode.
+ */
 function generateSpells() {
   // Generate random champions and abilities.
   let allChampions = Object.keys(myJSON);
-  let allAbilities = [0, 1, 2, 3, 4];
+  let allAbilities = myMode;
   let randomChampions = choice(allChampions, myDifficulty ** 2, false);
   let randomAbilities = choice(allAbilities, myDifficulty ** 2, true);
 
@@ -186,8 +206,8 @@ function generateSpells() {
  */
 class Spell {
   constructor(champion, ability) {
-    this.name = this._getName(champion, ability);
-    this.icon = this._getIcon(champion, ability);
+    this.name = this._getName(champion, atoi[ability]);
+    this.icon = this._getIcon(champion, atoi[ability]);
   }
 
   // Get the name of the champion ability.
@@ -278,4 +298,30 @@ function setVolume() {
  */
 function setDifficulty() {
   myDifficulty = document.getElementById("difficulty").value;
+}
+
+/**
+ * @name setMode
+ * @description Set the mode of the game.
+ */
+function setMode() {
+  myMode = [];
+  if (document.getElementById("p").checked) {
+    myMode.push("P");
+  }
+  if (document.getElementById("q").checked) {
+    myMode.push("Q");
+  }
+  if (document.getElementById("w").checked) {
+    myMode.push("W");
+  }
+  if (document.getElementById("e").checked) {
+    myMode.push("E");
+  }
+  if (document.getElementById("r").checked) {
+    myMode.push("R");
+  }
+  if (myMode.length == 0) {
+    myMode = ["P", "Q", "W", "E", "R"];
+  }
 }

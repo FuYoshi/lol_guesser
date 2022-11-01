@@ -132,6 +132,15 @@ img:not(.correct, .incorrect):hover {
   border-color: #ff0000;
 }
 
+#gamemode {
+  display: flex;
+  justify-content: space-between;
+}
+
+label {
+  display: inline-flex;
+}
+
 @media only screen and (max-width: 1000px) {
   body {
     background-image: none;
@@ -157,7 +166,7 @@ img:not(.correct, .incorrect):hover {
   }
 
   img {
-    width: 64px;
+    width: 80px;
   }
 
   button {
