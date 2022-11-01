@@ -141,7 +141,7 @@ function generateLevel() {
 
   // Create image grid with random spells.
   grid.textContent = "";
-	grid.style.maxWidth = 128 * myDifficulty + "px";
+	grid.style.maxWidth = 96 * myDifficulty + "px";
   spells.forEach((spell) => grid.append(spell2image(spell)));
 
   // Create score counter.

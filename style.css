@@ -111,7 +111,7 @@ button img {
 img {
   box-sizing: border-box;
   flex-grow: 1;
-  width: 128px;
+  width: 96px;
   border: 0.3rem solid transparent;
   border-radius: 1rem;
 }
@@ -157,7 +157,7 @@ img:not(.correct, .incorrect):hover {
   }
 
   img {
-    width: 96px;
+    width: 64px;
   }
 
   button {
